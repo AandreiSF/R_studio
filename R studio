@@ -1,0 +1,380 @@
+Assignment - R Programming ------------------------------------------------------------------------ 
+Q1. Create a file that contains 1000 lines of random strings.
+
+
+
+Q2. Create a random dataset of 100 rows and 30 columns. All the values are defined between [1,200]. 
+Perform the following operations: 
+(i)	Replace all the values with NA in the dataset defined between [10, 60]. Print the count of number rows having missing values. 
+
+colnames(dataset) <- paste0("V", 1:30)
+
+# Replace all values between 10 and 60 with NA
+dataset[dataset >= 10 & dataset <= 60] <- NA
+
+# Print the entire dataset
+print(dataset)
+
+# Count the number of rows with missing values
+missing_rows_count <- sum(rowSums(is.na(dataset)) > 0)
+
+# Print the count of rows with missing values
+print(paste("Number of rows with missing values: ", missing_rows_count))
+
+
+
+(ii)	Replace all the NA values with the average of the column value. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 100 rows and 30 columns
+dataset <- as.data.frame(matrix(runif(3000, min=1, max=200), nrow=100, ncol=30))
+
+# Give the columns some names
+colnames(dataset) <- paste0("V", 1:30)
+
+# Replace all values between 10 and 60 with NA
+dataset[dataset >= 10 & dataset <= 60] <- NA
+
+# Replace NA values with the column means
+dataset_imputed <- as.data.frame(lapply(dataset, function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x)))
+
+# Print the entire imputed dataset
+print(dataset_imputed)
+
+# Count the number of rows with missing values
+missing_rows_count <- sum(rowSums(is.na(dataset_imputed)) > 0)
+
+# Print the count of rows with missing values
+print(paste("Number of rows with missing values after imputation: ", missing_rows_count))
+
+
+(iii)	Find the Pearson correlation among all the columns and plot heat map. Also select                                       those columns having correlation <=0.7. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 100 rows and 30 columns
+dataset <- as.data.frame(matrix(runif(3000, min=1, max=200), nrow=100, ncol=30))
+
+# Give the columns some names
+colnames(dataset) <- paste0("V", 1:30)
+
+# Replace all values between 10 and 60 with NA
+dataset[dataset >= 10 & dataset <= 60] <- NA
+
+# Replace NA values with the column means
+dataset_imputed <- as.data.frame(lapply(dataset, function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x)))
+
+# Calculate correlation matrix
+cor_matrix <- cor(dataset_imputed, use = "complete.obs")
+
+# Plot the heat map
+heatmap(cor_matrix)
+
+# Select columns with correlation <= 0.7
+selected_columns <- list()
+for(i in 1:(ncol(cor_matrix)-1)) {
+    for(j in (i+1):ncol(cor_matrix)) {
+        if(abs(cor_matrix[i,j]) <= 0.7) {
+            selected_columns <- union(selected_columns, colnames(cor_matrix)[i])
+            selected_columns <- union(selected_columns, colnames(cor_matrix)[j])
+        }
+    }
+}
+
+# Print the selected columns
+print(selected_columns)
+
+# Select the columns from the dataset
+selected_dataset <- dataset_imputed[,selected_columns]
+
+# Print the selected dataset
+print(selected_dataset)
+
+
+(iv)	Normalize all the values in the dataset between 0 and 10. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 100 rows and 30 columns
+dataset <- as.data.frame(matrix(runif(3000, min=1, max=200), nrow=100, ncol=30))
+
+# Give the columns some names
+colnames(dataset) <- paste0("V", 1:30)
+
+# Function to normalize a vector between 0 and 10
+normalize <- function(x) {
+  return(10 * (x - min(x)) / (max(x) - min(x)))
+}
+
+# Normalize the dataset
+normalized_dataset <- as.data.frame(lapply(dataset, normalize))
+
+# Print the normalized dataset
+print(normalized_dataset)
+
+
+
+
+
+
+(v)	Replace all the values in the dataset with 1 if value <=0.5 else with 0. 
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 100 rows and 30 columns
+dataset <- as.data.frame(matrix(runif(3000, min=1, max=200), nrow=100, ncol=30))
+
+# Give the columns some names
+colnames(dataset) <- paste0("V", 1:30)
+
+# Replace values less than or equal to 0.5 with 1, else with 0
+dataset_transformed <- as.data.frame(lapply(dataset, function(x) ifelse(x <= 0.5, 1, 0)))
+
+# Print the transformed dataset
+print(dataset_transformed)
+
+
+
+
+Q3. Create a random dataset of 500 rows and 10 columns. 
+Columns 1 to 4 are defined between [-10, 10];
+
+df1 <- data.frame(matrix(rnorm(500 * 6), nrow = 500))
+
+# Create a data frame with 500 rows and 4 columns with uniform distribution between -10 and 10
+df2 <- data.frame(matrix(runif(500 * 4, min = -10, max = 10), nrow = 500))
+
+# Combine the two dataframes
+df <- cbind(df2, df1)
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+
+ Columns 5 to 8 are defined between [10, 20];
+
+# Set the seed to make your result reproducible
+set.seed(123)
+
+# Create a data frame with 500 rows and 4 columns with standard normal distribution
+df1 <- data.frame(matrix(rnorm(500 * 4), nrow = 500))
+
+# Create a data frame with 500 rows and 4 columns with uniform distribution between -10 and 10
+df2 <- data.frame(matrix(runif(500 * 4, min = -10, max = 10), nrow = 500))
+
+# Create a data frame with 500 rows and 4 columns with uniform distribution between 10 and 20
+df3 <- data.frame(matrix(runif(500 * 4, min = 10, max = 20), nrow = 500))
+
+# Combine the three dataframes
+df <- cbind(df2, df3, df1)
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+
+
+ Columns 9 to 10 are defined between [-100, 100].
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 500 rows and 8 columns with normal distribution
+df1 <- data.frame(matrix(rnorm(500 * 8), nrow = 500))
+
+# Create a data frame with 500 rows and 2 columns with uniform distribution between -100 and 100
+df2 <- data.frame(matrix(runif(500 * 2, min = -100, max = 100), nrow = 500))
+
+# Combine the two dataframes
+df <- cbind(df1, df2)
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+
+
+
+ Apply following clustering algorithms; determine the optimal number of clusters and plot distance metric graph using each algorithm. 
+K-Mean clustering (ii) Hierarchical clustering 
+
+This code is for every of the 3 subpoint of Q3
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 500 rows and 8 columns with normal distribution
+df1 <- data.frame(matrix(rnorm(500 * 8), nrow = 500))
+
+# Create a data frame with 500 rows and 2 columns with uniform distribution between -100 and 100
+df2 <- data.frame(matrix(runif(500 * 2, min = -100, max = 100), nrow = 500))
+
+# Combine the two dataframes
+df <- cbind(df1, df2)
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# K-Means Clustering
+# Here, we're choosing k=3, you can select the number of clusters according to your requirement
+kmeans_result <- kmeans(df, centers = 3)
+print(kmeans_result)
+
+# Hierarchical Clustering
+dist_matrix <- dist(df)
+hclust_result <- hclust(dist_matrix)
+plot(hclust_result)
+
+
+
+
+Q4. Create a random dataset of 600 rows and 15 columns. All the values are defined between [-100,100]. Perform the following operations:
+(i)	Plot scatter graph between Column 5 and Column 6. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 600 rows and 15 columns with uniform distribution between -100 and 100
+df <- data.frame(matrix(runif(600 * 15, min = -100, max = 100), nrow = 600))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# Plot scatter graph between Column 5 (Var_5) and Column 6 (Var_6)
+plot(df$Var_5, df$Var_6, xlab = "Var_5", ylab = "Var_6", main = "Scatter Plot between Var_5 and Var_6")
+
+
+
+
+
+
+
+(ii)	Plot histogram of each column in single graph. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Load necessary libraries
+if (!require("tidyverse")) install.packages("tidyverse")
+library(tidyverse)
+
+# Create a data frame with 600 rows and 15 columns with uniform distribution between -100 and 100
+df <- as_tibble(matrix(runif(600 * 15, min = -100, max = 100), nrow = 600))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+ 
+# Gather columns into key-value pairs
+df_long <- df %>% gather(key = "Variable", value = "Value")
+
+# Plot histograms of each column in a single graph
+ggplot(df_long, aes(x = Value)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~ Variable, scales = "free_x")
+
+
+
+
+(iii)	Plot the Box plot of each column in single graph.
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 600 rows and 15 columns with uniform distribution between -100 and 100
+df <- data.frame(matrix(runif(600 * 15, min = -100, max = 100), nrow = 600))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# Boxplot of each column in a single graph
+boxplot(df, las = 2, notch = TRUE, col = rainbow(ncol(df)),
+        main = "Boxplot of Variables",
+        xlab = "Variables",
+        ylab = "Values")
+
+
+ Q5. Create a random dataset of 500 rows and 5 columns: All the values are defined between [5,10]. Perform the following operations:
+(i)	Perform t-Test on each column. 
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 500 rows and 5 columns with uniform distribution between 5 and 10
+df <- data.frame(matrix(runif(500 * 5, min = 5, max = 10), nrow = 500))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# Perform t-test on each column
+t_test_results <- lapply(df, t.test)
+
+# Print the results
+print(t_test_results)
+
+
+(ii)	Perform Wilcoxon Signed Rank Test on each column.
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 500 rows and 5 columns with uniform distribution between 5 and 10
+df <- data.frame(matrix(runif(500 * 5, min = 5, max = 10), nrow = 500))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# Perform Wilcoxon Signed Rank Test on each column
+# Note: In this test we're comparing each column to its median value. This is just for demonstration.
+wilcox_test_results <- lapply(df, function(col) wilcox.test(col, mu = median(col)))
+
+# Print the results
+print(wilcox_test_results)
+
+
+(iii)	Perform Two Sample t-Test and Wilcoxon Rank Sum Test on Column 3 and Column 4
+
+# Set the seed for reproducibility
+set.seed(123)
+
+# Create a data frame with 500 rows and 5 columns with uniform distribution between 5 and 10
+df <- data.frame(matrix(runif(500 * 5, min = 5, max = 10), nrow = 500))
+
+# Assign column names
+names(df) <- paste("Var", seq_len(ncol(df)), sep="_")
+
+# Print the dataframe
+print(df)
+
+# Perform two-sample t-test on column 3 and 4
+t_test_result <- t.test(df$Var_3, df$Var_4)
+print(t_test_result)
+
+# Perform Wilcoxon Rank Sum Test on column 3 and 4
+wilcox_test_result <- wilcox.test(df$Var_3, df$Var_4)
+print(wilcox_test_result)
+
+
